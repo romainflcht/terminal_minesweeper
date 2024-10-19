@@ -3,7 +3,7 @@
 
 // * Function that set every box to not discovered and set there values to 0. 
 // * return: the game board newly created.  
-BOX_t** init_board()
+BOX_t** create_board()
 {
     int         h_i; 
     int         w_i; 
@@ -38,9 +38,33 @@ BOX_t** init_board()
 }
 
 
+// * Function that free the 2d array of boBOX_t struct. 
+// * @param: *board: the game board that will be freed. 
+void free_board(BOX_t** board)
+{
+    int i; 
+
+    if (!board)
+        return; 
+
+    for (i = 0; i < BOARD_H; i++)
+    {
+        if (!board[i])
+            return; 
+
+        free(board[i]); 
+        board[i] = NULL; 
+    }
+
+    free(board); 
+    board = NULL; 
+    return; 
+}
+
+
 // * Function that show the game board passed in argument. 
 // * @param: *board: the game board. 
-void show_board(BOX_t **board) 
+void show_board(BOX_t** board) 
 {
     int     i;  
     int     h_i; 
@@ -100,7 +124,8 @@ void show_board(BOX_t **board)
                     continue;
                 }
 
-                else if (current_box->value == -1) {
+                else if (current_box->value == -1) 
+                {
                     printf(" X ");
                     continue;
                 }
@@ -125,7 +150,7 @@ void show_board(BOX_t **board)
 
 // * Function that place bomb randomly on the game board.
 // * @param: *board: the game board. 
-void place_bomb(BOX_t **board) 
+void place_bomb(BOX_t** board) 
 {
     int nb_bomb;
     int rand_x;
@@ -134,7 +159,8 @@ void place_bomb(BOX_t **board)
     // Calculate how much bomb we want based on a poucentage. 
     nb_bomb = ((BOARD_H * BOARD_W) * BOMB_RATIO) / 100;
 
-    while (nb_bomb > 1) {
+    while (nb_bomb > 1) 
+    {
         // Genetate random w and y coordinates. 
         rand_x = randint(0, BOARD_W - 1);
         rand_y = randint(0, BOARD_H - 1);
@@ -156,8 +182,9 @@ void place_bomb(BOX_t **board)
 // * Function that return 1 if the coordinates are in the game board, 0 otherwise. 
 // * @param: x: x coordinate of the box. 
 // * @param: y: y coordinate of the box. 
-// * @ret: 1 if the coordinate is valid, 0 otherwise.  
-int check_coordinate(int x, int y) {
+// * @return: 1 if the coordinate is valid, 0 otherwise.  
+int check_coordinate(int x, int y) 
+{
     if ((x >= 0 && x <= BOARD_W - 1) && (y >= 0 && y <= BOARD_H - 1))
         return 1; 
 
@@ -169,7 +196,7 @@ int check_coordinate(int x, int y) {
 // * @param: x: the x coordinate of the box that need to update around boxs. 
 // * @param: y: the y coordinate of the box that need to update around boxs. 
 // * @param: @param: *board: the game board. 
-void update_box_value(int x, int y, BOX_t **board) 
+void update_box_value(int x, int y, BOX_t** board) 
 {
 
     int y_i; 
@@ -180,8 +207,10 @@ void update_box_value(int x, int y, BOX_t **board)
     if (!check_coordinate(x, y))
         return;
 
-    for (y_i = -1; y_i <= 1; y_i++) {
-        for (x_i = -1; x_i <= 1; x_i++) {
+    for (y_i = -1; y_i <= 1; y_i++) 
+    {
+        for (x_i = -1; x_i <= 1; x_i++) 
+        {
 
             new_x = x + x_i;
             new_y = y + y_i;
@@ -201,14 +230,13 @@ void update_box_value(int x, int y, BOX_t **board)
 }
 
 
-
 // * Function that discover the box passed in argument and return 1 if it was successful
 // * and -1 if the box was a bomb. 
 // * @param: x: the x coordinate of the box to discover. 
 // * @param: y: the y coordinate of the box to discover. 
 // * @param: @param: *board: the game board. 
-// * @ret: 1 if the move has been played and 0/-1 in case of error. 
-int discover(int x, int y, BOX_t **board) 
+// * @return: 1 if the move has been played and 0/-1 in case of error. 
+int discover(int x, int y, BOX_t** board) 
 {
 
     // Check if the coordinates are correct. 
@@ -256,13 +284,13 @@ int discover(int x, int y, BOX_t **board)
 }
 
 
-
 // * Function that flag the box passed in argument and return 1 if it was successful
 // * and -1 if not. 
 // * @param: x: the x coordinate of the box to discover. 
 // * @param: y: the y coordinate of the box to discover. 
 // * @param: @param: *board: the game board. 
-int flag(int x, int y, BOX_t **board) 
+// * @return: return 1 if the box as correcty been flagged and 0 otherwise. 
+int flag(int x, int y, BOX_t** board) 
 {
     // Check if the coordinates are correct. 
     if (!check_coordinate(x, y)) 
@@ -285,11 +313,13 @@ int flag(int x, int y, BOX_t **board)
 }
 
 
-
 // * Function that handle the user input and play a move according to the input. 
 // * @param: *user_input: pointer to the input string set by the player. 
 // * @param: @param: *board: the game board. 
-int play_a_move(char *user_input, BOX_t **board) 
+// * @return: return 1 if the move is valid and has been done, 0 if the user
+// *          input is invalid, -1 if the player played on a bomb and
+// *          -2 if the user want to see the help menu.  
+int play_a_move(char *user_input, BOX_t** board) 
 {
     char *p_user_input_begin; 
     int is_flag_action; 
@@ -310,6 +340,8 @@ int play_a_move(char *user_input, BOX_t **board)
     {
         clear_screen();
         printf("Goodbye :)\n"); 
+        
+        free_board(board); 
         exit(0);
     }
 
@@ -338,10 +370,10 @@ int play_a_move(char *user_input, BOX_t **board)
 }
 
 
-
 // * Function that return 1 if every bomb is flagged, 0 otherwise. 
 // * @param: @param: *board: the game board. 
-int check_win(BOX_t **board) 
+// * @return: 1 if the player won and 0 otherwise. 
+int check_win(BOX_t** board) 
 {
     int h_i; 
     int w_i; 

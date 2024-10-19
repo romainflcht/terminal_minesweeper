@@ -14,4 +14,5 @@ void show_help(void);
 // * @param: as_won: Show the win screen if the player won and show the 
 // *                 lose screen otherwise. 
 void end_screen(int as_won);
+
 #endif

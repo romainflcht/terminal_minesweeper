@@ -5,6 +5,7 @@
 #include <time.h>
 
 // __ FUNCTIONS ________________________________________________________________
+// * Initilialize the random seed based on current time. 
 void init_ramdom_seed(void);
 
 // * Function that generate a random number between an interval. 

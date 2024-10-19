@@ -1,6 +1,7 @@
 #include "utils.h"
 
-// * 
+
+// * Initilialize the random seed based on current time. 
 void init_ramdom_seed(void) 
 {
     struct timespec ts;

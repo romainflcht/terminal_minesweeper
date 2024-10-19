@@ -1,7 +1,6 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,15 +24,19 @@ typedef struct
 // __ FUNCTIONS ________________________________________________________________
 // * Function that set every box to not discovered and set there values to 0. 
 // * return: the game board newly created.  
-BOX_t** init_board();
+BOX_t** create_board();
+
+// * Function that free the 2d array of boBOX_t struct. 
+// * @param: *board: the game board that will be freed. 
+void free_board(BOX_t** board); 
 
 // * Function that show the game board passed in argument. 
 // * @param: *board: the game board. 
-void show_board(BOX_t **board);
+void show_board(BOX_t** board);
 
 // * Function that place bomb randomly on the game board.
 // * @param: *board: the game board. 
-void place_bomb(BOX_t **board);
+void place_bomb(BOX_t** board);
 
 // * Function that return 1 if the coordinates are in the game board, 0 otherwise. 
 // * @param: x: x coordinate of the box. 
@@ -45,7 +48,7 @@ int check_coordinate(int x, int y);
 // * @param: x: the x coordinate of the box that need to update around boxs. 
 // * @param: y: the y coordinate of the box that need to update around boxs. 
 // * @param: @param: *board: the game board. 
-void update_box_value(int x, int y, BOX_t **board);
+void update_box_value(int x, int y, BOX_t** board);
 
 // * Function that discover the box passed in argument and return 1 if it was successful
 // * and -1 if the box was a bomb. 
@@ -53,22 +56,27 @@ void update_box_value(int x, int y, BOX_t **board);
 // * @param: y: the y coordinate of the box to discover. 
 // * @param: @param: *board: the game board. 
 // * @ret: 1 if the move has been played and 0/-1 in case of error. 
-int discover(int x, int y, BOX_t **board);
+int discover(int x, int y, BOX_t** board);
 
 // * Function that flag the box passed in argument and return 1 if it was successful
 // * and -1 if not. 
 // * @param: x: the x coordinate of the box to discover. 
 // * @param: y: the y coordinate of the box to discover. 
 // * @param: @param: *board: the game board. 
-int flag(int x, int y, BOX_t **board);
+// * @return: return 1 if the box as correcty been flagged and 0 otherwise. 
+int flag(int x, int y, BOX_t** board);
 
 // * Function that handle the user input and play a move according to the input. 
 // * @param: *user_input: pointer to the input string set by the player. 
 // * @param: @param: *board: the game board. 
-int play_a_move(char *user_input, BOX_t **board);
+// * @return: return 1 if the move is valid and has been done, 0 if the user
+// *          input is invalid, -1 if the player played on a bomb and
+// *          -2 if the user want to see the help menu.  
+int play_a_move(char *user_input, BOX_t** board);
 
 // * Function that return 1 if every bomb is flagged, 0 otherwise. 
 // * @param: @param: *board: the game board. 
-int check_win(BOX_t **board);
+// * @return: 1 if the player won and 0 otherwise. 
+int check_win(BOX_t** board);
 
 #endif
